@@ -1,5 +1,7 @@
 import json
+
 FILE_NAME = "students.json"
+
 
 def load_students():
 
@@ -9,9 +11,10 @@ def load_students():
 
             return json.load(file)
 
-    except:
+    except FileNotFoundError:
 
         return []
+
 
 def save_students(students):
 
@@ -21,8 +24,9 @@ def save_students(students):
             students,
             file,
             indent=4
-        )  
-    
+        )
+
+
 def add_student(name, marks):
 
     students = load_students()
