@@ -1,5 +1,5 @@
-from student import students
-
+from student import load_students
+students = load_students()
 
 def calculate_total(student):
 
