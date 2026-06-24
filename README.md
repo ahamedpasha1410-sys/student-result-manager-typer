@@ -25,3 +25,31 @@ It helps manage student examination records.
 - Authentication
 - Attendance tracking
 - Web interface
+# Student Result Manager (UV + Typer)
+
+## Features
+
+- Add student details
+- View students
+- Edit student marks
+- Delete students
+- Find topper
+- Summarize results
+- Store records in CSV
+
+## Student information captured
+
+- Name
+- Academic Year
+- Term
+- Subjects
+- Marks
+
+## Technologies used
+
+- Python
+- UV
+- Typer
+- CSV
+- Git
+- GitHub Pull Requests
