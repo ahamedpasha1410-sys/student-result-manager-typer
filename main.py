@@ -20,6 +20,14 @@ def add():
 
     name = typer.prompt("Student Name")
 
+    year = typer.prompt("Academic Year")
+
+    term = typer.prompt("Term")
+
+    subjects = typer.prompt(
+        "Subjects (comma separated)"
+    ).split(",")
+
     marks = list(
         map(
             int,
@@ -29,10 +37,15 @@ def add():
         )
     )
 
-    add_student(name, marks)
+    add_student(
+        name,
+        year,
+        term,
+        subjects,
+        marks
+    )
 
     print("Student added")
-
 
 @app.command()
 def view():
