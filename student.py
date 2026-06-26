@@ -1,54 +1,106 @@
-import json
+import csv
+import os
 
-FILE_NAME = "students.json"
+FILE_NAME = "students.csv"
 
 
-def load_students():
+def add_student(name, year, term, subjects, marks):
+
+    file_exists = os.path.exists(FILE_NAME)
+
+    with open(FILE_NAME, "a", newline="") as file:
+
+        writer = csv.writer(file)
+
+        if not file_exists:
+
+            writer.writerow(
+                [
+                    "name",
+                    "year",
+                    "term",
+                    "subjects",
+                    "marks"
+                ]
+            )
+
+        writer.writerow(
+            [
+                name,
+                year,
+                term,
+                ",".join(subjects),
+                ",".join(map(str, marks))
+            ]
+        )
+
+
+def get_students():
+
+    students = []
 
     try:
 
         with open(FILE_NAME, "r") as file:
 
-            return json.load(file)
+            reader = csv.DictReader(file)
+
+            for row in reader:
+
+                students.append(
+                    {
+                        "name": row["name"],
+                        "year": row["year"],
+                        "term": row["term"],
+                        "subjects": row["subjects"].split(","),
+                        "marks": list(
+                            map(
+                                int,
+                                row["marks"].split(",")
+                            )
+                        )
+                    }
+                )
 
     except FileNotFoundError:
 
         return []
 
+    return students
+
 
 def save_students(students):
 
-    with open(FILE_NAME, "w") as file:
+    with open(FILE_NAME, "w", newline="") as file:
 
-        json.dump(
-            students,
-            file,
-            indent=4
+        writer = csv.writer(file)
+
+        writer.writerow(
+            [
+                "name",
+                "year",
+                "term",
+                "subjects",
+                "marks"
+            ]
         )
 
+        for student in students:
 
-def add_student(name, marks):
-
-    students = load_students()
-
-    students.append(
-        {
-            "name": name,
-            "marks": marks
-        }
-    )
-
-    save_students(students)
-
-
-def get_students():
-
-    return load_students()
+            writer.writerow(
+                [
+                    student["name"],
+                    student["year"],
+                    student["term"],
+                    ",".join(student["subjects"]),
+                    ",".join(map(str, student["marks"]))
+                ]
+            )
 
 
 def edit_student(name, marks):
 
-    students = load_students()
+    students = get_students()
 
     for student in students:
 
@@ -65,7 +117,7 @@ def edit_student(name, marks):
 
 def delete_student(name):
 
-    students = load_students()
+    students = get_students()
 
     for student in students:
 

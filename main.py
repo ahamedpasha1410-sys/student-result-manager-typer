@@ -1,5 +1,6 @@
 import typer
 
+
 from student import (
     add_student,
     get_students,
@@ -11,6 +12,7 @@ from utils import (
     find_topper,
     summarize_results
 )
+from faker_data import generate_student
 
 app = typer.Typer()
 
@@ -41,6 +43,22 @@ def view():
 
         print(student)
 
+@app.command()
+def generate(count: int = 10):
+
+    for _ in range(count):
+
+        student = generate_student()
+
+        add_student(
+            student["name"],
+            student["year"],
+            student["term"],
+            student["subjects"],
+            student["marks"]
+        )
+
+    print(f"{count} fake students generated.")
 
 @app.command()
 def edit():

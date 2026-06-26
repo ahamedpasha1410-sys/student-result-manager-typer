@@ -1,4 +1,4 @@
-from student import load_students
+from student import get_students
 
 
 def calculate_total(student):
@@ -8,7 +8,7 @@ def calculate_total(student):
 
 def find_topper():
 
-    students = load_students()
+    students = get_students()
 
     if not students:
 
@@ -27,7 +27,7 @@ def find_topper():
 
 def summarize_results():
 
-    students = load_students()
+    students = get_students()
 
     if not students:
 
