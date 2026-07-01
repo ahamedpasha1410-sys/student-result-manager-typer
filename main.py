@@ -1,5 +1,5 @@
 import typer
-
+from faker_data import generate_student
 from student import (
     add_student,
     get_students,
@@ -102,7 +102,22 @@ def topper():
 def summary():
 
     print(summarize_results())
+@app.command()
+def generate(count: int = 10):
 
+    for _ in range(count):
+
+        student = generate_student()
+
+        add_student(
+            student["name"],
+            student["year"],
+            student["term"],
+            student["subjects"],
+            student["marks"]
+        )
+
+    print(f"{count} students generated successfully.")
 
 if __name__ == "__main__":
 
