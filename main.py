@@ -47,6 +47,7 @@ def add():
 
     print("Student added")
 
+
 @app.command()
 def view():
 
@@ -102,6 +103,8 @@ def topper():
 def summary():
 
     print(summarize_results())
+
+
 @app.command()
 def generate(count: int = 10):
 
@@ -118,6 +121,7 @@ def generate(count: int = 10):
         )
 
     print(f"{count} students generated successfully.")
+
 
 if __name__ == "__main__":
 
