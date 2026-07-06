@@ -1,18 +1,19 @@
+from app.services.config import CLASS_CONFIG
+from app.services.analytics_student_service import AnalyticsStudentService
 import typer
-from faker_data import generate_student
-from student import (
-    add_student,
-    get_students,
-    edit_student,
-    delete_student
-)
 
-from utils import (
-    find_topper,
-    summarize_results
-)
+from faker_data import generate_student
+
+from app.services.add_student_service import AddStudentService
+
+from app.services.student_service import StudentService
+student_service = StudentService()
+add_student_service = AddStudentService()
+analytics_service = AnalyticsStudentService()
 
 app = typer.Typer()
+
+add_student_service = AddStudentService()
 
 
 @app.command()
@@ -20,13 +21,21 @@ def add():
 
     name = typer.prompt("Student Name")
 
-    year = typer.prompt("Academic Year")
+    student_class = typer.prompt("Class (5-10)")
 
     term = typer.prompt("Term")
 
-    subjects = typer.prompt(
-        "Subjects (comma separated)"
-    ).split(",")
+    if student_class not in CLASS_CONFIG:
+
+        print("Invalid class")
+
+        return
+
+    subjects = CLASS_CONFIG[student_class]["subjects"]
+
+    print("\nEnter marks for:")
+
+    print(", ".join(subjects))
 
     marks = list(
         map(
@@ -37,21 +46,20 @@ def add():
         )
     )
 
-    add_student(
+    add_student_service.add_student(
         name,
-        year,
+        student_class,
         term,
-        subjects,
         marks
     )
 
-    print("Student added")
+    print("Student added successfully.")
 
 
 @app.command()
 def view():
 
-    for student in get_students():
+    for student in student_service.get_students():
 
         print(student)
 
@@ -70,7 +78,10 @@ def edit():
         )
     )
 
-    if edit_student(name, marks):
+    if student_service.edit_student(
+        name,
+        marks
+    ):
 
         print("Updated")
 
@@ -84,7 +95,9 @@ def delete():
 
     name = typer.prompt("Student Name")
 
-    if delete_student(name):
+    if student_service.delete_student(
+        name
+    ):
 
         print("Deleted")
 
@@ -96,13 +109,17 @@ def delete():
 @app.command()
 def topper():
 
-    print(find_topper())
+    print(
+        analytics_service.find_topper()
+    )
 
 
 @app.command()
 def summary():
 
-    print(summarize_results())
+    print(
+        analytics_service.summarize_results()
+    )
 
 
 @app.command()
@@ -112,11 +129,10 @@ def generate(count: int = 10):
 
         student = generate_student()
 
-        add_student(
+        add_student_service.add_student(
             student["name"],
             student["year"],
             student["term"],
-            student["subjects"],
             student["marks"]
         )
 
