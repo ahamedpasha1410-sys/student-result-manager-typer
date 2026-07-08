@@ -1,5 +1,4 @@
-name,year,term,subjects,marks
-Mr. Billy Fischer,10,1,"English,Mathematics,Physics,Chemistry,Biology","88,94,78,67,71"
-Sandra Hansen,10,2,"English,Mathematics,Physics,Chemistry,Biology","88,81,78,73,96"
-Catherine Williams,10,2,"English,Mathematics,Physics,Chemistry,Biology","72,89,84,64,76"
-Eric Hudson,10,2,"English,Mathematics,Physics,Chemistry,Biology","97,84,95,78,61"
+name,year,term,English,Mathematics,Physics,Chemistry,Biology
+Wayne Hester,10,1,96,80,97,87,92
+Christopher Brown,10,2,90,98,63,92,99
+Ann Mendoza,10,2,82,98,72,76,70

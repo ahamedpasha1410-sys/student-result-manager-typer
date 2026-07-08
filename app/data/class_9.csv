@@ -1,2 +1,4 @@
-name,year,term,subjects,marks
-Cody Quinn,9,1,"English,Mathematics,Physics,Chemistry,Biology","89,85,95,60,95"
+name,year,term,English,Mathematics,Physics,Chemistry,Biology
+James Brown,9,2,90,81,87,90,88
+Lisa Ellis,9,2,63,96,92,82,99
+Mary West,9,2,61,94,74,96,92

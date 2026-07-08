@@ -4,17 +4,15 @@ import os
 
 class BaseStudentService:
 
-    HEADERS = [
-        "name",
-        "year",
-        "term",
-        "subjects",
-        "marks"
-    ]
-
-    def __init__(self, file_name):
+    def __init__(
+        self,
+        file_name,
+        subjects
+    ):
 
         self.file_name = file_name
+
+        self.subjects = subjects
 
     def load_students(self):
 
@@ -33,13 +31,10 @@ class BaseStudentService:
                             "name": row["name"],
                             "year": row["year"],
                             "term": row["term"],
-                            "subjects": row["subjects"].split(","),
-                            "marks": list(
-                                map(
-                                    int,
-                                    row["marks"].split(",")
-                                )
-                            )
+                            "marks": {
+                                subject: int(row[subject])
+                                for subject in self.subjects
+                            }
                         }
                     )
 
@@ -64,7 +59,14 @@ class BaseStudentService:
 
             writer = csv.writer(file)
 
-            writer.writerow(self.HEADERS)
+            writer.writerow(
+                [
+                    "name",
+                    "year",
+                    "term",
+                    *self.subjects
+                ]
+            )
 
             for student in students:
 
@@ -73,12 +75,9 @@ class BaseStudentService:
                         student["name"],
                         student["year"],
                         student["term"],
-                        ",".join(student["subjects"]),
-                        ",".join(
-                            map(
-                                str,
-                                student["marks"]
-                            )
-                        )
+                        *[
+                            student["marks"][subject]
+                            for subject in self.subjects
+                        ]
                     ]
                 )

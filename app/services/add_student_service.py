@@ -2,15 +2,9 @@ from app.services.base_student_service import BaseStudentService
 from app.services.config import CLASS_CONFIG
 
 
-class AddStudentService:
+class AddStudentService(BaseStudentService):
 
-    def add_student(
-        self,
-        name,
-        student_class,
-        term,
-        marks
-    ):
+    def __init__(self, student_class):
 
         if student_class not in CLASS_CONFIG:
 
@@ -18,30 +12,45 @@ class AddStudentService:
                 f"Invalid class: {student_class}"
             )
 
+        self.student_class = student_class
+
         config = CLASS_CONFIG[student_class]
 
-        subjects = config["subjects"]
+        super().__init__(
+            config["file"],
+            config["subjects"]
+        )
+        self.student_class = student_class
 
-        if len(marks) != len(subjects):
+    def add_student(
+        self,
+        name,
+        term,
+        marks
+    ):
+
+        if len(marks) != len(self.subjects):
 
             raise ValueError(
-                f"Exactly {len(subjects)} marks are required."
+                f"Exactly {len(self.subjects)} marks are required."
             )
 
-        service = BaseStudentService(
-            config["file"]
-        )
+        students = self.load_students()
 
-        students = service.load_students()
+        marks_dict = dict(
+            zip(
+                self.subjects,
+                marks
+            )
+        )
 
         students.append(
             {
                 "name": name,
-                "year": student_class,
+                "year": self.student_class,
                 "term": term,
-                "subjects": subjects,
-                "marks": marks
+                "marks": marks_dict
             }
         )
 
-        service.save_students(students)
+        self.save_students(students)

@@ -1,4 +1,3 @@
-name,year,term,subjects,marks
-Ahmed,5,1,"English,Mathematics,Science,Social,Computer","90,91,92,93,94"
-Douglas Morgan,5,1,"English,Mathematics,Science,Social,Computer","76,88,76,82,100"
-Terry Prince,5,2,"English,Mathematics,Science,Social,Computer","87,87,86,61,90"
+name,year,term,English,Mathematics,Science,Social,Computer
+David Wade,5,2,91,91,92,85,86
+Susan Gillespie,5,1,62,73,88,88,68

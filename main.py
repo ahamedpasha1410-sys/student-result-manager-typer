@@ -8,12 +8,9 @@ from app.services.add_student_service import AddStudentService
 
 from app.services.student_service import StudentService
 student_service = StudentService()
-add_student_service = AddStudentService()
 analytics_service = AnalyticsStudentService()
 
 app = typer.Typer()
-
-add_student_service = AddStudentService()
 
 
 @app.command()
@@ -21,47 +18,83 @@ def add():
 
     name = typer.prompt("Student Name")
 
-    student_class = typer.prompt("Class (5-10)")
+    student_class = typer.prompt("Class")
 
     term = typer.prompt("Term")
 
-    if student_class not in CLASS_CONFIG:
-
-        print("Invalid class")
-
-        return
-
     subjects = CLASS_CONFIG[student_class]["subjects"]
 
-    print("\nEnter marks for:")
+    marks = []
 
-    print(", ".join(subjects))
+    for subject in subjects:
 
-    marks = list(
-        map(
-            int,
+        mark = int(
             typer.prompt(
-                "Marks separated by space"
-            ).split()
+                f"Enter marks for {subject}"
+            )
         )
+
+        marks.append(mark)
+
+    add_student_service = AddStudentService(
+        student_class
     )
 
     add_student_service.add_student(
         name,
-        student_class,
         term,
         marks
     )
 
-    print("Student added successfully.")
+    print("Student added successfully")
+
+
+@app.command()
+def subject(subject: str):
+
+    result = analytics_service.get_subject_marks(
+        subject
+    )
+
+    if not result:
+
+        print("No records found.")
+
+        return
+
+    for student in result:
+
+        print(
+            f'{student["name"]}: {student["marks"]}'
+        )
 
 
 @app.command()
 def view():
 
-    for student in student_service.get_students():
+    students = student_service.get_students()
 
-        print(student)
+    if not students:
+
+        print("No students found.")
+
+        return
+
+    for student in students:
+
+        print("-" * 40)
+
+        print(f'Name  : {student["name"]}')
+        print(f'Class : {student["year"]}')
+        print(f'Term  : {student["term"]}')
+
+        print()
+
+        for subject, mark in student["marks"].items():
+
+            print(f"{subject:<12}: {mark}")
+
+        print("-" * 40)
 
 
 @app.command()
@@ -69,25 +102,36 @@ def edit():
 
     name = typer.prompt("Student Name")
 
-    marks = list(
-        map(
-            int,
-            typer.prompt(
-                "New marks"
-            ).split()
+    student_class = typer.prompt("Class")
+
+    if student_class not in CLASS_CONFIG:
+
+        print("Invalid class")
+
+        return
+
+    marks = []
+
+    for subject in CLASS_CONFIG[student_class]["subjects"]:
+
+        mark = typer.prompt(
+            f"Enter marks for {subject}",
+            type=int
         )
-    )
+
+        marks.append(mark)
 
     if student_service.edit_student(
         name,
+        student_class,
         marks
     ):
 
-        print("Updated")
+        print("Student updated successfully.")
 
     else:
 
-        print("Student not found")
+        print("Student not found.")
 
 
 @app.command()
@@ -95,15 +139,18 @@ def delete():
 
     name = typer.prompt("Student Name")
 
+    student_class = typer.prompt("Class")
+
     if student_service.delete_student(
-        name
+        name,
+        student_class
     ):
 
-        print("Deleted")
+        print("Student deleted successfully.")
 
     else:
 
-        print("Student not found")
+        print("Student not found.")
 
 
 @app.command()
@@ -128,10 +175,12 @@ def generate(count: int = 10):
     for _ in range(count):
 
         student = generate_student()
+        service = AddStudentService(
+            student["year"]
+        )
 
-        add_student_service.add_student(
+        service.add_student(
             student["name"],
-            student["year"],
             student["term"],
             student["marks"]
         )

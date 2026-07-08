@@ -11,7 +11,8 @@ class StudentService:
         for config in CLASS_CONFIG.values():
 
             service = BaseStudentService(
-                config["file"]
+                config["file"],
+                config["subjects"]
             )
 
             students.extend(
@@ -23,62 +24,78 @@ class StudentService:
     def edit_student(
         self,
         name,
+        student_class,
         marks
     ):
 
-        for config in CLASS_CONFIG.values():
+        config = CLASS_CONFIG[student_class]
 
-            service = BaseStudentService(
-                config["file"]
-            )
+        service = BaseStudentService(
+            config["file"],
+            config["subjects"]
+        )
 
-            students = service.load_students()
+        students = service.load_students()
+        updated = False
 
-            updated = False
+        for student in students:
 
-            for student in students:
+            if student["name"].lower() == name.lower():
 
-                if student["name"].lower() == name.lower():
+                student["marks"] = dict(
+                    zip(
+                        config["subjects"],
+                        marks
+                    )
+                )
 
-                    student["marks"] = marks
+                updated = True
 
-                    service.save_students(students)
+                break
 
-                    return True
+        if updated:
+
+            service.save_students(students)
+
+            return True
 
         return False
 
     def delete_student(
         self,
-        name
+        name,
+        student_class
     ):
 
-        for config in CLASS_CONFIG.values():
+        config = CLASS_CONFIG[student_class]
 
-            service = BaseStudentService(
-                config["file"]
+        service = BaseStudentService(
+            config["file"],
+            config["subjects"]
+        )
+
+        students = service.load_students()
+
+        remaining = []
+
+        deleted = False
+
+        for student in students:
+
+            if student["name"].lower() == name.lower():
+
+                deleted = True
+
+            else:
+
+                remaining.append(student)
+
+        if deleted:
+
+            service.save_students(
+                remaining
             )
 
-            students = service.load_students()
-
-            remaining = []
-
-            deleted = False
-
-            for student in students:
-
-                if student["name"].lower() == name.lower():
-
-                    deleted = True
-
-                else:
-
-                    remaining.append(student)
-
-            if deleted:
-
-                service.save_students(remaining)
-
-                return True
+            return True
 
         return False
